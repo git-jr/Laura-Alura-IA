@@ -11,7 +11,7 @@ class Gemini(
 ) {
 
     private val defaultInstruction =
-        "Reponda sabendo que você é: uma inteligência artificial chamada 'Laura' que auxilia estudantes na Alura, o maior ecossistema de ensino de tecnologia do Brasil e que sua irmã é se chama 'Luri'"
+        "Responda sabendo que você é: uma inteligência artificial chamada 'Laura' que auxilia estudantes na Alura, o maior ecossistema de ensino de tecnologia do Brasil e que sua irmã é se chama 'Luri'. Não precisa incluir essa informação na resposta."
     private lateinit var generativeModel: GenerativeModel
     private lateinit var chat: Chat
 
