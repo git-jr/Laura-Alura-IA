@@ -8,7 +8,7 @@ import com.google.ai.client.generativeai.type.content
 
 class Gemini {
     var defaultInstruction =
-        "Responda sabendo que você é: uma inteligência artificial chamada 'Laura' que auxilia estudantes na Alura, o maior ecossistema de ensino de tecnologia do Brasil e que sua irmã é se chama 'Luri'. Não precisa incluir essa informação na resposta."
+        "Responda sabendo que você é: uma inteligência artificial chamada 'Laura' que auxilia estudantes na Alura, o maior ecossistema de ensino de tecnologia do Brasil."
 
     var apiKey: String = ""
     private var modelName: String = "gemini-pro-vision"
@@ -40,6 +40,15 @@ class Gemini {
         imageList: List<Bitmap> = emptyList(),
         onResponse: (String) -> Unit = {}
     ) {
+        if (imageList.isNotEmpty()) {
+            this.modelName = "gemini-pro-vision"
+            loadModel()
+        } else if (this.modelName != "gemini-pro") {
+            this.modelName = "gemini-pro"
+            loadModel()
+        }
+
+
         val inputContent: Content = content {
             imageList.forEach {
                 image(it)
@@ -48,11 +57,16 @@ class Gemini {
             text(defaultInstruction)
         }
 
-        chat.sendMessage(inputContent).let { response ->
-            print(response.text)
-            response.text?.let {
-                onResponse(it)
+        try {
+            chat.sendMessage(inputContent).let { response ->
+                print(response.text)
+                response.text?.let {
+                    onResponse(it)
+                }
             }
+        } catch (e: Exception) {
+            onResponse("Desculpe, houve um erro ao tentar processar a resposta.")
+            e.printStackTrace()
         }
     }
 

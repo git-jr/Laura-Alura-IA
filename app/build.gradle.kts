@@ -9,7 +9,7 @@ android {
 
     defaultConfig {
         applicationId = "com.paradoxo.laura"
-        minSdk = 23
+        minSdk = 24
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
@@ -74,7 +74,11 @@ dependencies {
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
 
+    implementation(libs.coil.compose)
     implementation(libs.generativeai)
     implementation (libs.lottie.compose)
+
+
+    implementation("com.meetup:twain:0.2.2")
 
 }
