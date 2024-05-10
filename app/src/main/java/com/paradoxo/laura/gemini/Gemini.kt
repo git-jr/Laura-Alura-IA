@@ -6,47 +6,33 @@ import com.google.ai.client.generativeai.GenerativeModel
 import com.google.ai.client.generativeai.type.Content
 import com.google.ai.client.generativeai.type.content
 
-class Gemini(
-    private val apiKey: String = "",
-) {
-
-    private val defaultInstruction =
+class Gemini {
+    var defaultInstruction =
         "Responda sabendo que você é: uma inteligência artificial chamada 'Laura' que auxilia estudantes na Alura, o maior ecossistema de ensino de tecnologia do Brasil e que sua irmã é se chama 'Luri'. Não precisa incluir essa informação na resposta."
+
+    var apiKey: String = ""
+    private var modelName: String = "gemini-pro-vision"
+
     private lateinit var generativeModel: GenerativeModel
     private lateinit var chat: Chat
 
-    init {
-        setupModel()
-    }
-
     fun setupModel(
-        modelName: String = "gemini-pro-vision",
-        chatMode: Boolean = false
+        apiKey: String,
+        modelName: String = "gemini-pro-vision"
     ) {
-        generativeModel = GenerativeModel(
-            modelName = modelName,
-            apiKey = apiKey
-        )
+        this.apiKey = apiKey
+        this.modelName = modelName
 
-        if (chatMode) {
-            chat = generativeModel.startChat()
-        }
+        loadModel()
+
     }
 
-    suspend fun sendPrompt(
-        imageList: List<Bitmap>,
-        prompt: String
-    ) {
-        val inputContent: Content = content {
-            imageList.forEach {
-                image(it)
-            }
-            text(prompt)
-            text(defaultInstruction)
-        }
-
-        val response = generativeModel.generateContent(inputContent)
-        print(response.text)
+    private fun loadModel() {
+        generativeModel = GenerativeModel(
+            modelName = this.modelName,
+            apiKey = this.apiKey
+        )
+        chat = generativeModel.startChat()
     }
 
     suspend fun sendPromptChat(
@@ -68,13 +54,22 @@ class Gemini(
                 onResponse(it)
             }
         }
+    }
 
-//        chat.sendMessageStream(inputContent).collect { chunk ->
-//            print(chunk.text)
-//            chunk.text?.let { text ->
-//                onResponse(text)
-//            }
-//        }
+
+    fun redefineDefaultData(
+        defaultInstruction: String? = "",
+        apiKey: String? = ""
+    ) {
+        defaultInstruction?.let {
+            this.defaultInstruction = it
+        }
+
+        apiKey?.let {
+            this.apiKey = it
+        }
+
+        loadModel()
     }
 
 }
